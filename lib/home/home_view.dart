@@ -9,7 +9,11 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomBackgroundWidget(
-      child: Scaffold(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('News App'),
+        ),
+      ),
     );
   }
 }
