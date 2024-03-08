@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/core/config/constants.dart';
 import 'package:news_app/core/widget/custom_background_widget.dart';
+import 'package:news_app/home/page/category_view.dart';
 import 'package:news_app/home/widget/custom_drawer.dart';
 import 'package:news_app/home/widget/custom_item_widget.dart';
+import 'package:news_app/main.dart';
 import 'package:news_app/models/category_model.dart';
+import 'package:news_app/pages/settings/page/settings_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -56,47 +59,74 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return CustomBackgroundWidget(
       child: Scaffold(
-        appBar: AppBar(
-          leadingWidth: 80,
-          title: Text(
-            'News App',
-            style: Constants.theme.textTheme.titleLarge,
+          appBar: AppBar(
+            leadingWidth: 80,
+            title: Text(
+              selectedCategory == null ? 'News App' : selectedCategory!.title,
+              style: Constants.theme.textTheme.titleLarge,
+            ),
           ),
-        ),
-        drawer: const CustomDrawer(),
-        body: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Pick your category\nof interest',
-                textAlign: TextAlign.start,
-                style: Constants.theme.textTheme.bodyLarge?.copyWith(
-                  color: const Color(0xff4F5A69),
-                  height: 1.2,
-                ),
-              ),
-              Expanded(
-                child: GridView.builder(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 20,
-                      childAspectRatio: 4 / 5),
-                  itemBuilder: (context, index) => CustomItemWidget(
-                    index: index,
-                    categoryModel: categoriesList[index],
+          drawer: CustomDrawer(
+            onCategoryDrawerTap: onDrawerCategoryClicked,
+          ),
+          body: selectedCategory == null
+              ? Padding(
+                  padding: const EdgeInsets.all(30.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Pick your category\nof interest',
+                        textAlign: TextAlign.start,
+                        style: Constants.theme.textTheme.bodyLarge?.copyWith(
+                          color: const Color(0xff4F5A69),
+                          height: 1.2,
+                        ),
+                      ),
+                      Expanded(
+                        child: GridView.builder(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 25, horizontal: 20),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 20,
+                                  crossAxisSpacing: 20,
+                                  childAspectRatio: 4 / 5),
+                          itemBuilder: (context, index) => CustomItemWidget(
+                            index: index,
+                            categoryModel: categoriesList[index],
+                            onCategoryClicked: onCategoryClicked,
+                          ),
+                          itemCount: 6,
+                        ),
+                      ),
+                    ],
                   ),
-                  itemCount: 6,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+                )
+              : CategoryView(categoryModel: selectedCategory!)),
     );
+  }
+
+  CategoryModel? selectedCategory;
+
+  void onCategoryClicked(CategoryModel categoryModel) {
+    selectedCategory = categoryModel;
+    setState(() {});
+    print(categoryModel.id);
+  }
+
+  void onDrawerCategoryClicked() {
+    setState(() {
+      selectedCategory = null;
+      navigatorKey.currentState!.pop();
+    });
+  }
+
+  void onDrawerSettingsClicked(SettingsView settingsView) {
+    setState(() {
+      selectedCategory = selectedCategory;
+      navigatorKey.currentState!.pop();
+    });
   }
 }

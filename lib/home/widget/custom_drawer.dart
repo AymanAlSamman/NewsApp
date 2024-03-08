@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:news_app/core/config/constants.dart';
 import 'package:news_app/core/config/pages_route_name.dart';
 import 'package:news_app/main.dart';
+import 'package:news_app/pages/settings/page/settings_view.dart';
 
 class CustomDrawer extends StatelessWidget {
-  const CustomDrawer({super.key});
+  Function onCategoryDrawerTap;
+
+  CustomDrawer({super.key, required this.onCategoryDrawerTap});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +40,9 @@ class CustomDrawer extends StatelessWidget {
                   width: 5,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    onCategoryDrawerTap();
+                  },
                   child: Text(
                     'Categories',
                     style: Constants.theme.textTheme.bodyMedium
@@ -60,7 +65,9 @@ class CustomDrawer extends StatelessWidget {
                   width: 5,
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    onCategoryDrawerTap();
+                  },
                   child: Text(
                     'Settings',
                     style: Constants.theme.textTheme.bodyMedium
