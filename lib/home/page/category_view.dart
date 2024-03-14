@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:news_app/core/config/constants.dart';
 import 'package:news_app/core/network/api_manager.dart';
 import 'package:news_app/core/widget/custom_background_widget.dart';
+import 'package:news_app/home/widget/news_ist_widget.dart';
+import 'package:news_app/home/widget/tab_item_widget.dart';
 import 'package:news_app/models/category_model.dart';
 
-class CategoryView extends StatelessWidget {
+class CategoryView extends StatefulWidget {
   final CategoryModel categoryModel;
 
   const CategoryView({super.key, required this.categoryModel});
 
   @override
+  State<CategoryView> createState() => _CategoryViewState();
+}
+
+class _CategoryViewState extends State<CategoryView> {
+
+  @override
   Widget build(BuildContext context) {
     return CustomBackgroundWidget(
       child: FutureBuilder(
-        future: ApiManager.fetchDataSources(categoryModel.id),
+        future: ApiManager.fetchDataSources(widget.categoryModel.id),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -27,14 +35,7 @@ class CategoryView extends StatelessWidget {
           }
 
           var sourcesList = snapshot.data ?? [];
-          return ListView.builder(
-            itemBuilder: (context, index) => Text(
-              sourcesList[index].name,
-              style: Constants.theme.textTheme.bodyMedium
-                  ?.copyWith(color: Colors.black),
-            ),
-            itemCount: sourcesList.length,
-          );
+          return NewsListWidget(sourcesList: sourcesList);
         },
       ),
     );

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:news_app/core/config/constants.dart';
+import 'package:news_app/models/articles_data_model.dart';
 import 'package:news_app/models/category_model.dart';
 import 'package:news_app/models/source_model.dart';
 
@@ -30,6 +31,27 @@ class ApiManager {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Failed to load album');
+    }
+  }
+
+  static Future<List<Articles>> fetchDataArticales(String sourceId) async {
+    Map<String, dynamic> queryParams = {
+      "apiKey": Constants.apiKey,
+      "sources": sourceId,
+    };
+    var url = Uri.https(
+      Constants.baseUrl,
+      "/v2/everything",
+      queryParams,
+    );
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      ArticlesDataModel articlesDataModel = ArticlesDataModel.fromJson(data);
+      return articlesDataModel.articles ?? [];
+    } else {
+      throw Exception("Error fetching data articles");
     }
   }
 }
